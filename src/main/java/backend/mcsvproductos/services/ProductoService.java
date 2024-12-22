@@ -5,5 +5,7 @@ import backend.mcsvproductos.models.dto.response.ProductoDtoResponse;
 
 public interface ProductoService {
 
-    ProductoDtoResponse agregarProducto(ProductoDtoRequest productoDtoResponse);
+    ProductoDtoResponse agregarProducto(ProductoDtoRequest dto);
+
+    void verificarDatos(ProductoDtoRequest dto);
 }
