@@ -5,8 +5,7 @@ import java.time.LocalDate;
 public record ProductoDtoResponse(Integer id,
                                   String nombre,
                                   String descripcion,
-                                  String precio,
-                                  String stock,
+                                  Double precio,
                                   Boolean estado,
                                   LocalDate fechaCreacion) {
 }
