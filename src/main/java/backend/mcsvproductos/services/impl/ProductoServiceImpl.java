@@ -1,5 +1,6 @@
 package backend.mcsvproductos.services.impl;
 
+import backend.mcsvproductos.enums.Estado;
 import backend.mcsvproductos.exceptions.ProductoException;
 import backend.mcsvproductos.mappers.ProductoMapper;
 import backend.mcsvproductos.models.dto.request.ProductoDtoRequest;
@@ -9,6 +10,9 @@ import backend.mcsvproductos.repositories.ProductoRepository;
 import backend.mcsvproductos.services.ProductoService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class ProductoServiceImpl implements ProductoService {
@@ -24,6 +28,8 @@ public class ProductoServiceImpl implements ProductoService {
     public ProductoDtoResponse agregarProducto(ProductoDtoRequest dto) {
         verificarDatos(dto);
         Producto producto = productoMapper.toEntity(dto);
+        producto.setEstado(Estado.ACTIVO.getValor());
+        producto.setFechaCreacion(LocalDate.now());
         Producto productoGuardado = productoRepository.save(producto);
         return productoMapper.toDto(productoGuardado);
     }
@@ -45,5 +51,11 @@ public class ProductoServiceImpl implements ProductoService {
         if (precio == null || precio <= 0) {
             throw new ProductoException(ProductoException.PRODUCTO_PRECIO_INVALIDO);
         }
+    }
+
+    @Override
+    public List<ProductoDtoResponse> listar() {
+        List<Producto> productos = productoRepository.findAll();
+        return productoMapper.toDtoList(productos);
     }
 }
