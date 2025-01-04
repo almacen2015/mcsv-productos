@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -14,6 +16,32 @@ public class ProductoRepositoryTest {
 
     @Autowired
     private ProductoRepository productoRepository;
+
+    @Test
+    public void testListar_DadoProductosEnBD_RetornaListaProductos() {
+        // Arrange
+        Producto producto1 = Producto.builder()
+                .nombre("Producto 1")
+                .descripcion("Descripcion 1")
+                .precio(100.0)
+                .build();
+
+        Producto producto2 = Producto.builder()
+                .nombre("Producto 2")
+                .descripcion("Descripcion 2")
+                .precio(200.0)
+                .build();
+
+        productoRepository.save(producto1);
+        productoRepository.save(producto2);
+
+        // Act
+        List<Producto> productos = productoRepository.findAll();
+
+        // Assert
+        assertNotNull(productos);
+        assertEquals(2, productos.size());
+    }
 
     @Test
     public void testGuardar_DadoProductoValido_RetornaProductoGuardado() {

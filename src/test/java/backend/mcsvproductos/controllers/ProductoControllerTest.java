@@ -10,12 +10,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,6 +33,29 @@ class ProductoControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Test
+    void testListarProductos() throws Exception {
+        // Arrange
+        ProductoDtoResponse producto1 = new ProductoDtoResponse(1, "Producto 1", "Descripcion 1", 100.0, true, LocalDate.now());
+        ProductoDtoResponse producto2 = new ProductoDtoResponse(2, "Producto 2", "Descripcion 2", 200.0, true, LocalDate.now());
+        // Act
+        when(service.listar()).thenReturn(List.of(producto1, producto2));
+        // Assert
+        mockMvc.perform(get("/api/producto"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].nombre").value("Producto 1"))
+                .andExpect(jsonPath("$[0].descripcion").value("Descripcion 1"))
+                .andExpect(jsonPath("$[0].precio").value(100.0))
+                .andExpect(jsonPath("$[0].estado").value(true))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].nombre").value("Producto 2"))
+                .andExpect(jsonPath("$[1].descripcion").value("Descripcion 2"))
+                .andExpect(jsonPath("$[1].precio").value(200.0))
+                .andExpect(jsonPath("$[1].estado").value(true));
+    }
+
     // Test methods here
     @Test
     void testAgregarProducto() throws Exception {
@@ -41,7 +66,7 @@ class ProductoControllerTest {
         ProductoDtoResponse producto = new ProductoDtoResponse(1, "Producto 1", "Descripcion 1", 100.0, true, LocalDate.now());
         when(service.agregarProducto(any(ProductoDtoRequest.class))).thenReturn(producto);
         // Assert
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/producto")
+        mockMvc.perform(post("/api/producto")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())

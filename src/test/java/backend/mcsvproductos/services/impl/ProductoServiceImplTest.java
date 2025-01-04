@@ -11,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,6 +26,52 @@ class ProductoServiceImplTest {
 
     @InjectMocks
     private ProductoServiceImpl service;
+
+    @Test
+    void testListar_SinProductosEnBD_RetornaListaVacia() {
+        // Arrange
+
+        // Act
+        when(repository.findAll()).thenReturn(List.of());
+        List<ProductoDtoResponse> productos = service.listar();
+
+        // Assert
+        assertThat(productos).isNotNull();
+        assertThat(productos).isEmpty();
+    }
+
+    @Test
+    void testListar_ProductosEnBD_RetornaListaProductos() {
+        // Arrange
+        Producto producto1 = Producto.builder()
+                .id(1)
+                .nombre("Producto 1")
+                .descripcion("Descripcion 1")
+                .precio(100.0)
+                .build();
+        Producto producto2 = Producto.builder()
+                .id(2)
+                .nombre("Producto 2")
+                .descripcion("Descripcion 2")
+                .precio(200.0)
+                .build();
+
+        // Act
+        when(repository.findAll()).thenReturn(List.of(producto1, producto2));
+        List<ProductoDtoResponse> productos = service.listar();
+
+        // Assert
+        assertThat(productos).isNotNull();
+        assertThat(productos).hasSize(2);
+        assertThat(productos.get(0).id()).isEqualTo(1);
+        assertThat(productos.get(0).nombre()).isEqualTo("Producto 1");
+        assertThat(productos.get(0).descripcion()).isEqualTo("Descripcion 1");
+        assertThat(productos.get(0).precio()).isEqualTo(100.0);
+        assertThat(productos.get(1).id()).isEqualTo(2);
+        assertThat(productos.get(1).nombre()).isEqualTo("Producto 2");
+        assertThat(productos.get(1).descripcion()).isEqualTo("Descripcion 2");
+        assertThat(productos.get(1).precio()).isEqualTo(200.0);
+    }
 
     // Test methods here
     @Test
