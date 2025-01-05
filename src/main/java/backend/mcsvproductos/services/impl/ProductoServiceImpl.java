@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductoServiceImpl implements ProductoService {
@@ -57,5 +58,21 @@ public class ProductoServiceImpl implements ProductoService {
     public List<ProductoDtoResponse> listar() {
         List<Producto> productos = productoRepository.findAll();
         return productoMapper.toDtoList(productos);
+    }
+
+    @Override
+    public ProductoDtoResponse buscarPorId(Integer id) {
+        if (id == null || id <= 0) {
+            throw new ProductoException(ProductoException.ID_INVALIDO);
+        }
+
+        Optional<Producto> producto = productoRepository.findById(id);
+        if (producto.isEmpty()) {
+            return null;
+        }
+
+        ProductoDtoResponse response = productoMapper.toDto(producto.get());
+
+        return response;
     }
 }

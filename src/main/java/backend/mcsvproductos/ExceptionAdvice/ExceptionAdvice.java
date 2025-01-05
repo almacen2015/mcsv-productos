@@ -15,7 +15,8 @@ public class ExceptionAdvice {
     public ResponseEntity<?> handleProductoException(ProductoException e) {
         if (Objects.equals(e.getMessage(), ProductoException.PRODUCTO_DESCRIPCION_VACIA) ||
                 Objects.equals(e.getMessage(), ProductoException.PRODUCTO_NOMBRE_VACIO) ||
-                Objects.equals(e.getMessage(), ProductoException.PRODUCTO_PRECIO_INVALIDO)) {
+                Objects.equals(e.getMessage(), ProductoException.PRODUCTO_PRECIO_INVALIDO) ||
+                Objects.equals(e.getMessage(), ProductoException.ID_INVALIDO)) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } else {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

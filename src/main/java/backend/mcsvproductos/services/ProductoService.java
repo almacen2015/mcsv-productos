@@ -12,4 +12,6 @@ public interface ProductoService {
     void verificarDatos(ProductoDtoRequest dto);
 
     List<ProductoDtoResponse> listar();
+
+    ProductoDtoResponse buscarPorId(Integer id);
 }
