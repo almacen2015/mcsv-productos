@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,6 +27,40 @@ class ProductoServiceImplTest {
 
     @InjectMocks
     private ProductoServiceImpl service;
+
+    @Test
+    void testBuscarPorNombre_ProductoNoExiste_RetornaNull() {
+        // Arrange
+
+        // Act
+        when(repository.findByNombre("Producto 1")).thenReturn(Optional.empty());
+        ProductoDtoResponse producto = service.buscarPorNombre("Producto 1");
+
+        // Assert
+        assertThat(producto).isNull();
+    }
+
+    @Test
+    void testBuscarPorNombre_ProductoExiste_RetornaProducto() {
+        // Arrange
+        Producto producto = Producto.builder()
+                .id(1)
+                .nombre("Producto 1")
+                .descripcion("Descripcion 1")
+                .precio(100.0)
+                .build();
+
+        // Act
+        when(repository.findByNombre("Producto 1")).thenReturn(Optional.of(producto));
+        ProductoDtoResponse productoDtoResponse = service.buscarPorNombre("Producto 1");
+
+        // Assert
+        assertThat(productoDtoResponse).isNotNull();
+        assertThat(productoDtoResponse.id()).isEqualTo(1);
+        assertThat(productoDtoResponse.nombre()).isEqualTo("Producto 1");
+        assertThat(productoDtoResponse.descripcion()).isEqualTo("Descripcion 1");
+        assertThat(productoDtoResponse.precio()).isEqualTo(100.0);
+    }
 
     @Test
     void testBuscarPorId_ProductoExiste_RetornaProducto() {

@@ -53,4 +53,15 @@ public class ProductoController {
         ProductoDtoResponse producto = productoService.buscarPorId(id);
         return new ResponseEntity<>(producto, HttpStatus.OK);
     }
+
+    @GetMapping("/nombre/{nombre}")
+    @Operation(summary = "Buscar producto por nombre", description = "Busca un producto por su nombre")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Producto encontrado"),
+            @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+    })
+    public ResponseEntity<ProductoDtoResponse> buscarPorNombre(@PathVariable String nombre) {
+        ProductoDtoResponse producto = productoService.buscarPorNombre(nombre);
+        return new ResponseEntity<>(producto, HttpStatus.OK);
+    }
 }

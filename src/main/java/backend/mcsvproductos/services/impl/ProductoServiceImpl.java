@@ -75,4 +75,20 @@ public class ProductoServiceImpl implements ProductoService {
 
         return response;
     }
+
+    @Override
+    public ProductoDtoResponse buscarPorNombre(String nombre) {
+        if (nombre == null || nombre.isBlank()) {
+            throw new ProductoException(ProductoException.PRODUCTO_NOMBRE_VACIO);
+        }
+
+        Optional<Producto> producto = productoRepository.findByNombre(nombre);
+        if (producto.isEmpty()) {
+            return null;
+        }
+
+        ProductoDtoResponse response = productoMapper.toDto(producto.get());
+
+        return response;
+    }
 }

@@ -34,6 +34,22 @@ class ProductoControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
+    void testBuscarPorNombre() throws Exception {
+        // Arrange
+        ProductoDtoResponse producto = new ProductoDtoResponse(1, "Producto 1", "Descripcion 1", 100.0, true, LocalDate.now());
+        // Act
+        when(service.buscarPorNombre("Producto 1")).thenReturn(producto);
+        // Assert
+        mockMvc.perform(get("/api/producto/nombre/{nombre}", "Producto 1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.nombre").value("Producto 1"))
+                .andExpect(jsonPath("$.descripcion").value("Descripcion 1"))
+                .andExpect(jsonPath("$.precio").value(100.0))
+                .andExpect(jsonPath("$.estado").value(true));
+    }
+
+    @Test
     void testBuscarPorId() throws Exception {
         // Arrange
         ProductoDtoResponse producto = new ProductoDtoResponse(1, "Producto 1", "Descripcion 1", 100.0, true, LocalDate.now());

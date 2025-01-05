@@ -14,4 +14,6 @@ public interface ProductoService {
     List<ProductoDtoResponse> listar();
 
     ProductoDtoResponse buscarPorId(Integer id);
+
+    ProductoDtoResponse buscarPorNombre(String nombre);
 }
