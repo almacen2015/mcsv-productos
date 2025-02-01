@@ -7,5 +7,6 @@ public record ProductoDtoResponse(Integer id,
                                   String descripcion,
                                   Double precio,
                                   Boolean estado,
-                                  LocalDate fechaCreacion) {
+                                  LocalDate fechaCreacion,
+                                  Integer stock) {
 }

@@ -1,4 +1,4 @@
-package backend.mcsvproductos.ExceptionAdvice;
+package backend.mcsvproductos.exceptionadvice;
 
 import backend.mcsvproductos.exceptions.ProductoException;
 import org.springframework.http.HttpStatus;

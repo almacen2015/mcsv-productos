@@ -24,4 +24,5 @@ public class Producto {
     private Double precio;
     private Boolean estado;
     private LocalDate fechaCreacion;
+    private Integer stock;
 }

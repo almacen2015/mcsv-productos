@@ -31,9 +31,9 @@ class ProductoServiceImplTest {
     @Test
     void testBuscarPorNombre_ProductoNoExiste_RetornaNull() {
         // Arrange
+        when(repository.findByNombre("Producto 1")).thenReturn(Optional.empty());
 
         // Act
-        when(repository.findByNombre("Producto 1")).thenReturn(Optional.empty());
         ProductoDtoResponse producto = service.buscarPorNombre("Producto 1");
 
         // Assert
