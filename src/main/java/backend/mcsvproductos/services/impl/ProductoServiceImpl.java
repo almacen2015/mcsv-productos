@@ -30,24 +30,21 @@ public class ProductoServiceImpl implements ProductoService {
     @Transactional(rollbackOn = Exception.class)
     public void actualizarStock(Integer idProducto, Integer cantidad, String tipoMovimiento) {
         verificarCantidad(cantidad);
+        Producto productoEncontrado = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new ProductoException(ProductoException.PRODUCTO_NO_ENCONTRADO));
 
-        ProductoDtoResponse producto = buscarPorId(idProducto);
-        if (producto == null) {
-            throw new ProductoException(ProductoException.ID_INVALIDO);
-        }
-
-        Producto productoEntity = productoMapper.toEntity(producto);
-
+        final int stock = productoEncontrado.getStock();
         int stockFinal;
         if (Objects.equals(tipoMovimiento, TipoMovimiento.SALIDA.name())) {
-            stockFinal = producto.stock() - cantidad;
+            stockFinal = stock - cantidad;
         } else {
-            stockFinal = producto.stock() + cantidad;
+            stockFinal = stock + cantidad;
         }
+
         verificarStock(stockFinal);
-        productoEntity.setId(producto.id());
-        productoEntity.setStock(stockFinal);
-        productoRepository.save(productoEntity);
+        productoEncontrado.setId(productoEncontrado.getId());
+        productoEncontrado.setStock(stockFinal);
+        productoRepository.save(productoEncontrado);
     }
 
     @Override

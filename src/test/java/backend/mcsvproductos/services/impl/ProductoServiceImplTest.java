@@ -11,12 +11,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +29,68 @@ class ProductoServiceImplTest {
 
     @InjectMocks
     private ProductoServiceImpl service;
+
+    @Test
+    void testActualizarStock_dadoDatosCorrectosSalida_RetornaProductoActualizado() {
+        Producto producto = Producto.builder()
+                .id(1)
+                .stock(10)
+                .descripcion("Descripcion 1")
+                .nombre("Producto 1")
+                .estado(true)
+                .fechaCreacion(LocalDate.of(2024, 1, 1))
+                .build();
+
+        when(repository.findById(1)).thenReturn(Optional.of(producto));
+
+        service.actualizarStock(1, 5, "SALIDA");
+
+        assertEquals(5, producto.getStock());
+        verify(repository).save(producto);
+    }
+
+    @Test
+    void testActualizarStock_DadoDatosCorrectosEntrada_RetornaProductoActualizado() {
+        Producto producto = Producto.builder()
+                .id(1)
+                .stock(10)
+                .descripcion("Descripcion 1")
+                .nombre("Producto 1")
+                .estado(true)
+                .fechaCreacion(LocalDate.of(2024, 1, 1))
+                .build();
+
+        when(repository.findById(1)).thenReturn(Optional.of(producto));
+
+        service.actualizarStock(1, 30, "ENTRADA");
+
+        assertEquals(40, producto.getStock());
+        verify(repository).save(producto);
+    }
+
+    @Test
+    void testActualizarStock_DadoProductoNoEncontrado_RetornaError() {
+        when(repository.findById(1)).thenReturn(Optional.empty());
+
+        assertThrows(ProductoException.class, () -> service.actualizarStock(1, 10, "ENTRADA"));
+    }
+
+    @Test
+    void testActualizarStock_DadoStockFinalNegativoSalida_RetornaError() {
+        Producto producto = Producto.builder()
+                .id(1)
+                .stock(10)
+                .build();
+
+        when(repository.findById(1)).thenReturn(Optional.of(producto));
+
+        assertThrows(ProductoException.class, () -> service.actualizarStock(1, 20, "SALIDA"));
+    }
+
+    @Test
+    void testActualizarStock_DadoCantidadNegativa_RetornaError() {
+        assertThrows(ProductoException.class, () -> service.actualizarStock(1, -10, "SALIDA"));
+    }
 
     @Test
     void testBuscarPorNombre_ProductoNoExiste_RetornaNull() {
