@@ -16,4 +16,6 @@ public interface ProductoService {
     ProductoDtoResponse buscarPorId(Integer id);
 
     ProductoDtoResponse buscarPorNombre(String nombre);
+
+    void actualizarStock(Integer idProducto, Integer cantidad, String tipoMovimiento);
 }

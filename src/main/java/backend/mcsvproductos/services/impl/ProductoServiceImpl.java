@@ -1,6 +1,7 @@
 package backend.mcsvproductos.services.impl;
 
 import backend.mcsvproductos.enums.Estado;
+import backend.mcsvproductos.enums.TipoMovimiento;
 import backend.mcsvproductos.exceptions.ProductoException;
 import backend.mcsvproductos.mappers.ProductoMapper;
 import backend.mcsvproductos.models.dto.request.ProductoDtoRequest;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -26,6 +28,30 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
+    public void actualizarStock(Integer idProducto, Integer cantidad, String tipoMovimiento) {
+        verificarCantidad(cantidad);
+
+        ProductoDtoResponse producto = buscarPorId(idProducto);
+        if (producto == null) {
+            throw new ProductoException(ProductoException.ID_INVALIDO);
+        }
+
+        Producto productoEntity = productoMapper.toEntity(producto);
+
+        int stockFinal;
+        if (Objects.equals(tipoMovimiento, TipoMovimiento.SALIDA.name())) {
+            stockFinal = producto.stock() - cantidad;
+        } else {
+            stockFinal = producto.stock() + cantidad;
+        }
+        verificarStock(stockFinal);
+        productoEntity.setId(producto.id());
+        productoEntity.setStock(stockFinal);
+        productoRepository.save(productoEntity);
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
     public ProductoDtoResponse agregarProducto(ProductoDtoRequest dto) {
         verificarDatos(dto);
         Producto producto = productoMapper.toEntity(dto);
@@ -33,6 +59,18 @@ public class ProductoServiceImpl implements ProductoService {
         producto.setFechaCreacion(LocalDate.now());
         Producto productoGuardado = productoRepository.save(producto);
         return productoMapper.toDto(productoGuardado);
+    }
+
+    private void verificarStock(Integer stock) {
+        if (stock == null || stock < 0) {
+            throw new ProductoException(ProductoException.STOCK_INVALIDO);
+        }
+    }
+
+    private void verificarCantidad(Integer cantidad) {
+        if (cantidad == null || cantidad <= 0) {
+            throw new ProductoException(ProductoException.CANTIDAD_INVALIDA);
+        }
     }
 
     @Override

@@ -64,4 +64,15 @@ public class ProductoController {
         ProductoDtoResponse producto = productoService.buscarPorNombre(nombre);
         return new ResponseEntity<>(producto, HttpStatus.OK);
     }
+
+    @PutMapping("/stock/{idProducto}/{cantidad}/{tipoMovimiento}")
+    @Operation(summary = "Actualizar stock", description = "Actualiza el stock de un producto")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Stock actualizado"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+    })
+    public ResponseEntity<Void> actualizarStock(@PathVariable Integer idProducto, @PathVariable Integer cantidad, @PathVariable String tipoMovimiento) {
+        productoService.actualizarStock(idProducto, cantidad, tipoMovimiento);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

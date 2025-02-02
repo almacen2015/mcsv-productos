@@ -16,6 +16,8 @@ public interface ProductoMapper {
     @Mapping(target = "id", ignore = true)
     Producto toEntity(ProductoDtoRequest dto);
 
+    Producto toEntity(ProductoDtoResponse dto);
+
     ProductoDtoResponse toDto(Producto entity);
 
     List<ProductoDtoResponse> toDtoList(List<Producto> list);
