@@ -15,9 +15,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,6 +32,19 @@ class ProductoControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Test
+    void testActualizarStock() throws Exception {
+        // Arrange
+        ProductoDtoResponse producto = new ProductoDtoResponse(1, "Producto 1", "Descripcion 1", 100.0, true, LocalDate.now(), 10);
+
+        // Act
+        doNothing().when(service).actualizarStock(1, 5, "SALIDA");
+
+        // Assert
+        mockMvc.perform(put("/api/producto/stock/{idProducto}/{cantidad}/{tipoMovimiento}", 1, 5, "SALIDA"))
+                .andExpect(status().isOk());
+    }
 
     @Test
     void testBuscarPorNombre() throws Exception {
