@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class ProductoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @Operation(summary = "Agregar producto", description = "Agrega un nuevo producto")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Producto agregado"),
@@ -34,6 +36,7 @@ public class ProductoController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN, USER')")
     @Operation(summary = "Listar productos", description = "Lista todos los productos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Productos listados")
@@ -44,6 +47,7 @@ public class ProductoController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN, USER')")
     @Operation(summary = "Buscar producto por id", description = "Busca un producto por su id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto encontrado"),
@@ -55,6 +59,7 @@ public class ProductoController {
     }
 
     @GetMapping("/nombre/{nombre}")
+    @PreAuthorize("hasAnyRole('ADMIN, USER')")
     @Operation(summary = "Buscar producto por nombre", description = "Busca un producto por su nombre")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto encontrado"),
@@ -66,6 +71,7 @@ public class ProductoController {
     }
 
     @PutMapping("/stock/{idProducto}/{cantidad}/{tipoMovimiento}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @Operation(summary = "Actualizar stock", description = "Actualiza el stock de un producto")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Stock actualizado"),

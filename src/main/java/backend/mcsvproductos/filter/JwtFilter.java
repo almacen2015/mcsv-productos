@@ -8,9 +8,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collection;
 
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -32,8 +39,24 @@ public class JwtFilter extends OncePerRequestFilter {
             DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
             String username = jwtUtils.extractUsername(decodedJWT);
             String stringRoles = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
-        }
 
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            //se obtienen los roles del usuario logueado y se convierten en una lista de GrantedAuthority
+            Collection<? extends GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(stringRoles);
+
+            //se obtiene el contexto de seguridad
+            SecurityContext context = SecurityContextHolder.getContext();
+
+            //se crea un objeto de tipo Authentication y se le asigna el usuario logueado
+            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
+
+
+            //se asigna el objeto SecurityContext al contexto de seguridad
+            context.setAuthentication(authentication);
+            SecurityContextHolder.setContext(context);
+
+            filterChain.doFilter(request, response);
+        } else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
     }
 }
