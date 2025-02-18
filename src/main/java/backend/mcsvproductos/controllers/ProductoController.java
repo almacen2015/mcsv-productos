@@ -36,7 +36,7 @@ public class ProductoController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN, USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @Operation(summary = "Listar productos", description = "Lista todos los productos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Productos listados")
@@ -47,7 +47,7 @@ public class ProductoController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN, USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @Operation(summary = "Buscar producto por id", description = "Busca un producto por su id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto encontrado"),
@@ -59,7 +59,7 @@ public class ProductoController {
     }
 
     @GetMapping("/nombre/{nombre}")
-    @PreAuthorize("hasAnyRole('ADMIN, USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @Operation(summary = "Buscar producto por nombre", description = "Busca un producto por su nombre")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto encontrado"),

@@ -1,6 +1,5 @@
 package backend.mcsvproductos.security;
 
-import backend.mcsvproductos.filter.JwtFilter;
 import backend.mcsvproductos.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

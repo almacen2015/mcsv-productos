@@ -1,4 +1,4 @@
-package backend.mcsvproductos.filter;
+package backend.mcsvproductos.security;
 
 import backend.mcsvproductos.util.JwtUtils;
 import com.auth0.jwt.interfaces.DecodedJWT;
