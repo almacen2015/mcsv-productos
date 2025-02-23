@@ -34,6 +34,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
+        if (esUriSwagger(request, response, filterChain)) return;
+
         if (jwtToken != null) {
             jwtToken = jwtToken.substring(7);
             DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
@@ -54,9 +56,28 @@ public class JwtFilter extends OncePerRequestFilter {
             context.setAuthentication(authentication);
             SecurityContextHolder.setContext(context);
 
-            filterChain.doFilter(request, response);
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
+
+        filterChain.doFilter(request, response);
+    }
+
+    private boolean esUriSwagger(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        String[] swaggerWhiteList = {
+                "/swagger-ui",
+                "/v3/api-docs"
+        };
+
+        String uri = request.getRequestURI();
+
+        for (String path : swaggerWhiteList) {
+            if (uri.contains(path)) {
+                filterChain.doFilter(request, response);
+                return true;
+            }
+        }
+        return false;
     }
 }
