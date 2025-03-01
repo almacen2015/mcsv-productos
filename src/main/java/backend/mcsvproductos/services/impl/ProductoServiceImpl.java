@@ -28,6 +28,23 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
+    public ProductoDtoResponse actualizarProducto(ProductoDtoRequest dto, Integer id) {
+        verificarDatos(dto);
+        verificarId(id);
+
+        Producto producto = productoRepository.findById(id)
+                .orElseThrow(() -> new ProductoException(ProductoException.PRODUCTO_NO_ENCONTRADO));
+
+        producto.setNombre(dto.nombre());
+        producto.setDescripcion(dto.descripcion());
+        producto.setPrecio(dto.precio());
+
+        Producto productoGuardado = productoRepository.save(producto);
+        return productoMapper.toDto(productoGuardado);
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
     public void actualizarStock(Integer idProducto, Integer cantidad, String tipoMovimiento) {
         verificarCantidad(cantidad);
         Producto productoEncontrado = productoRepository.findById(idProducto)
@@ -67,6 +84,12 @@ public class ProductoServiceImpl implements ProductoService {
     private void verificarCantidad(Integer cantidad) {
         if (cantidad == null || cantidad <= 0) {
             throw new ProductoException(ProductoException.CANTIDAD_INVALIDA);
+        }
+    }
+
+    private void verificarId(Integer id) {
+        if (id == null || id <= 0) {
+            throw new ProductoException(ProductoException.ID_INVALIDO);
         }
     }
 

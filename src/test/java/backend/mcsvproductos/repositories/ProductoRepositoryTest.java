@@ -18,6 +18,34 @@ public class ProductoRepositoryTest {
     private ProductoRepository productoRepository;
 
     @Test
+    void testActualizarProducto_DadoProductoValido_RetornaProductoActualizado() {
+        // Arrange
+        Producto producto = Producto.builder()
+                .nombre("Producto 1")
+                .descripcion("Descripcion 1")
+                .precio(100.0)
+                .build();
+
+        productoRepository.save(producto);
+
+        Producto productoActualizado = Producto.builder()
+                .nombre("Producto 2")
+                .descripcion("Descripcion 2")
+                .precio(200.0)
+                .build();
+
+        // Act
+        productoRepository.save(productoActualizado);
+
+        // Assert
+        assertNotNull(productoActualizado);
+        assertNotNull(productoActualizado.getId());
+        assertEquals("Producto 2", productoActualizado.getNombre());
+        assertEquals("Descripcion 2", productoActualizado.getDescripcion());
+        assertEquals(200.0, productoActualizado.getPrecio());
+    }
+
+    @Test
     void testBuscarPorNombre_DadoNombreExistente_RetornaProducto() {
         // Arrange
         Producto producto = Producto.builder()

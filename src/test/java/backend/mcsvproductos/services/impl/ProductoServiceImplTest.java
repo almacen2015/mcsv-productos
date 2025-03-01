@@ -31,6 +31,36 @@ class ProductoServiceImplTest {
     private ProductoServiceImpl service;
 
     @Test
+    void testActualizarProducto_DadoProductoValido_RetornaProductoActualizado() {
+        Producto producto = Producto.builder()
+                .id(1)
+                .nombre("Producto 1")
+                .descripcion("Descripcion 1")
+                .precio(100.0)
+                .build();
+
+        Producto productoActualizado = Producto.builder()
+                .id(1)
+                .nombre("Producto 2")
+                .descripcion("Descripcion 2")
+                .precio(200.0)
+                .build();
+
+        ProductoDtoRequest dto = new ProductoDtoRequest("Producto 2", "Descripcion 2", 200.0);
+
+        when(repository.findById(any(Integer.class))).thenReturn(Optional.of(producto));
+        when(repository.save(any(Producto.class))).thenReturn(productoActualizado);
+
+        ProductoDtoResponse productoDtoResponse = service.actualizarProducto(dto, 1);
+
+        assertEquals(1, productoDtoResponse.id());
+        assertEquals("Producto 2", productoDtoResponse.nombre());
+        assertEquals("Descripcion 2", productoDtoResponse.descripcion());
+        assertEquals(200.0, productoDtoResponse.precio());
+        verify(repository).save(producto);
+    }
+
+    @Test
     void testActualizarStock_dadoDatosCorrectosSalida_RetornaProductoActualizado() {
         Producto producto = Producto.builder()
                 .id(1)

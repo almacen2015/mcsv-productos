@@ -2,11 +2,13 @@ package backend.mcsvproductos.controllers;
 
 import backend.mcsvproductos.models.dto.request.ProductoDtoRequest;
 import backend.mcsvproductos.models.dto.response.ProductoDtoResponse;
+import backend.mcsvproductos.security.TestSecurityConfig;
 import backend.mcsvproductos.services.ProductoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductoController.class)
+@Import(TestSecurityConfig.class)
 class ProductoControllerTest {
 
     @Autowired
@@ -32,6 +35,22 @@ class ProductoControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Test
+    void testActualizarProducto() throws Exception {
+        // Arrange
+        ProductoDtoRequest dto = new ProductoDtoRequest("Producto 2", "Descripcion 1", 100.0);
+        String json = objectMapper.writeValueAsString(dto);
+        ProductoDtoResponse producto = new ProductoDtoResponse(1, "Producto 2", "Descripcion 1", 100.0, true, LocalDate.now(), 10);
+        // Act
+        when(service.actualizarProducto(any(ProductoDtoRequest.class), any(Integer.class))).thenReturn(producto);
+        // Assert
+        mockMvc.perform(patch("/api/producto/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
+    }
 
     @Test
     void testActualizarStock() throws Exception {

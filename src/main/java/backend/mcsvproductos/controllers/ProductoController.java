@@ -73,6 +73,18 @@ public class ProductoController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @Operation(summary = "Actualizar producto", description = "Actualiza un producto")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Producto actualizado"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+    })
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProductoDtoResponse> actualizarProducto(@RequestBody ProductoDtoRequest dto, @PathVariable Integer id) {
+        ProductoDtoResponse producto = productoService.actualizarProducto(dto, id);
+        return new ResponseEntity<>(producto, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @Operation(summary = "Actualizar stock", description = "Actualiza el stock de un producto")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Stock actualizado"),

@@ -9,6 +9,8 @@ public interface ProductoService {
 
     ProductoDtoResponse agregarProducto(ProductoDtoRequest dto);
 
+    ProductoDtoResponse actualizarProducto(ProductoDtoRequest dto, Integer id);
+
     void verificarDatos(ProductoDtoRequest dto);
 
     List<ProductoDtoResponse> listar();
