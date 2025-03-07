@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.Objects;
 import java.util.Set;
 
 @Slf4j
@@ -15,10 +14,10 @@ import java.util.Set;
 public class ExceptionAdvice {
 
     private static final Set<String> ERRORES_VALIDACION = Set.of(
-            ProductoException.PRODUCTO_DESCRIPCION_VACIA,
-            ProductoException.PRODUCTO_NOMBRE_VACIO,
-            ProductoException.PRODUCTO_PRECIO_INVALIDO,
-            ProductoException.ID_INVALIDO
+            ProductoException.PRODUCT_DESCRIPTION_EMPTY,
+            ProductoException.PRODUCT_NAME_EMPTY,
+            ProductoException.PRODUCT_PRICE_INVALID,
+            ProductoException.INVALID_ID
     );
 
     @ExceptionHandler(ProductoException.class)

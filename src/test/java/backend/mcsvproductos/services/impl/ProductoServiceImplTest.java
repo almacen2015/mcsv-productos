@@ -51,7 +51,7 @@ class ProductoServiceImplTest {
         when(repository.findById(any(Integer.class))).thenReturn(Optional.of(producto));
         when(repository.save(any(Producto.class))).thenReturn(productoActualizado);
 
-        ProductoDtoResponse productoDtoResponse = service.actualizarProducto(dto, 1);
+        ProductoDtoResponse productoDtoResponse = service.update(dto, 1);
 
         assertEquals(1, productoDtoResponse.id());
         assertEquals("Producto 2", productoDtoResponse.nombre());
@@ -73,7 +73,7 @@ class ProductoServiceImplTest {
 
         when(repository.findById(1)).thenReturn(Optional.of(producto));
 
-        service.actualizarStock(1, 5, "SALIDA");
+        service.updateStock(1, 5, "SALIDA");
 
         assertEquals(5, producto.getStock());
         verify(repository).save(producto);
@@ -92,7 +92,7 @@ class ProductoServiceImplTest {
 
         when(repository.findById(1)).thenReturn(Optional.of(producto));
 
-        service.actualizarStock(1, 30, "ENTRADA");
+        service.updateStock(1, 30, "ENTRADA");
 
         assertEquals(40, producto.getStock());
         verify(repository).save(producto);
@@ -102,7 +102,7 @@ class ProductoServiceImplTest {
     void testActualizarStock_DadoProductoNoEncontrado_RetornaError() {
         when(repository.findById(1)).thenReturn(Optional.empty());
 
-        assertThrows(ProductoException.class, () -> service.actualizarStock(1, 10, "ENTRADA"));
+        assertThrows(ProductoException.class, () -> service.updateStock(1, 10, "ENTRADA"));
     }
 
     @Test
@@ -114,12 +114,12 @@ class ProductoServiceImplTest {
 
         when(repository.findById(1)).thenReturn(Optional.of(producto));
 
-        assertThrows(ProductoException.class, () -> service.actualizarStock(1, 20, "SALIDA"));
+        assertThrows(ProductoException.class, () -> service.updateStock(1, 20, "SALIDA"));
     }
 
     @Test
     void testActualizarStock_DadoCantidadNegativa_RetornaError() {
-        assertThrows(ProductoException.class, () -> service.actualizarStock(1, -10, "SALIDA"));
+        assertThrows(ProductoException.class, () -> service.updateStock(1, -10, "SALIDA"));
     }
 
     @Test
@@ -128,7 +128,7 @@ class ProductoServiceImplTest {
         when(repository.findByNombre("Producto 1")).thenReturn(Optional.empty());
 
         // Act
-        ProductoDtoResponse producto = service.buscarPorNombre("Producto 1");
+        ProductoDtoResponse producto = service.getByName("Producto 1");
 
         // Assert
         assertThat(producto).isNull();
@@ -146,7 +146,7 @@ class ProductoServiceImplTest {
 
         // Act
         when(repository.findByNombre("Producto 1")).thenReturn(Optional.of(producto));
-        ProductoDtoResponse productoDtoResponse = service.buscarPorNombre("Producto 1");
+        ProductoDtoResponse productoDtoResponse = service.getByName("Producto 1");
 
         // Assert
         assertThat(productoDtoResponse).isNotNull();
@@ -168,7 +168,7 @@ class ProductoServiceImplTest {
 
         // Act
         when(repository.findById(1)).thenReturn(java.util.Optional.of(producto));
-        ProductoDtoResponse productoDtoResponse = service.buscarPorId(1);
+        ProductoDtoResponse productoDtoResponse = service.getById(1);
 
         // Assert
         assertThat(productoDtoResponse).isNotNull();
@@ -184,7 +184,7 @@ class ProductoServiceImplTest {
 
         // Act
         when(repository.findById(1)).thenReturn(java.util.Optional.empty());
-        ProductoDtoResponse producto = service.buscarPorId(1);
+        ProductoDtoResponse producto = service.getById(1);
 
         // Assert
         assertThat(producto).isNull();
@@ -196,7 +196,7 @@ class ProductoServiceImplTest {
 
         // Act
         when(repository.findAll()).thenReturn(List.of());
-        List<ProductoDtoResponse> productos = service.listar();
+        List<ProductoDtoResponse> productos = service.listAll();
 
         // Assert
         assertThat(productos).isNotNull();
@@ -221,7 +221,7 @@ class ProductoServiceImplTest {
 
         // Act
         when(repository.findAll()).thenReturn(List.of(producto1, producto2));
-        List<ProductoDtoResponse> productos = service.listar();
+        List<ProductoDtoResponse> productos = service.listAll();
 
         // Assert
         assertThat(productos).isNotNull();
@@ -286,7 +286,7 @@ class ProductoServiceImplTest {
 
         // Act
         when(repository.save(any(Producto.class))).thenReturn(productoGuardado);
-        ProductoDtoResponse productoDtoResponse = service.agregarProducto(dto);
+        ProductoDtoResponse productoDtoResponse = service.add(dto);
 
         // Assert
         assertThat(productoDtoResponse).isNotNull();

@@ -32,8 +32,8 @@ public class ProductoController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos")
     })
     @PostMapping
-    public ResponseEntity<ProductoDtoResponse> agregarProducto(@RequestBody ProductoDtoRequest dto) {
-        ProductoDtoResponse producto = productoService.agregarProducto(dto);
+    public ResponseEntity<ProductoDtoResponse> add(@RequestBody ProductoDtoRequest dto) {
+        ProductoDtoResponse producto = productoService.add(dto);
         return new ResponseEntity<>(producto, HttpStatus.CREATED);
     }
 
@@ -43,8 +43,8 @@ public class ProductoController {
             @ApiResponse(responseCode = "200", description = "Productos listados")
     })
     @GetMapping
-    public ResponseEntity<List<ProductoDtoResponse>> listar() {
-        List<ProductoDtoResponse> productos = productoService.listar();
+    public ResponseEntity<List<ProductoDtoResponse>> list() {
+        List<ProductoDtoResponse> productos = productoService.listAll();
         return new ResponseEntity<>(productos, HttpStatus.OK);
     }
 
@@ -55,8 +55,8 @@ public class ProductoController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<ProductoDtoResponse> buscarPorId(@PathVariable Integer id) {
-        ProductoDtoResponse producto = productoService.buscarPorId(id);
+    public ResponseEntity<ProductoDtoResponse> getById(@PathVariable Integer id) {
+        ProductoDtoResponse producto = productoService.getById(id);
         return new ResponseEntity<>(producto, HttpStatus.OK);
     }
 
@@ -67,8 +67,8 @@ public class ProductoController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
     @GetMapping("/nombre/{nombre}")
-    public ResponseEntity<ProductoDtoResponse> buscarPorNombre(@PathVariable String nombre) {
-        ProductoDtoResponse producto = productoService.buscarPorNombre(nombre);
+    public ResponseEntity<ProductoDtoResponse> getByName(@PathVariable String nombre) {
+        ProductoDtoResponse producto = productoService.getByName(nombre);
         return new ResponseEntity<>(producto, HttpStatus.OK);
     }
 
@@ -79,8 +79,8 @@ public class ProductoController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos")
     })
     @PatchMapping("/{id}")
-    public ResponseEntity<ProductoDtoResponse> actualizarProducto(@RequestBody ProductoDtoRequest dto, @PathVariable Integer id) {
-        ProductoDtoResponse producto = productoService.actualizarProducto(dto, id);
+    public ResponseEntity<ProductoDtoResponse> update(@RequestBody ProductoDtoRequest dto, @PathVariable Integer id) {
+        ProductoDtoResponse producto = productoService.update(dto, id);
         return new ResponseEntity<>(producto, HttpStatus.OK);
     }
 
@@ -91,8 +91,8 @@ public class ProductoController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos")
     })
     @PutMapping("/stock/{idProducto}/{cantidad}/{tipoMovimiento}")
-    public ResponseEntity<Void> actualizarStock(@PathVariable Integer idProducto, @PathVariable Integer cantidad, @PathVariable String tipoMovimiento) {
-        productoService.actualizarStock(idProducto, cantidad, tipoMovimiento);
+    public ResponseEntity<Void> updateStock(@PathVariable Integer idProducto, @PathVariable Integer cantidad, @PathVariable String tipoMovimiento) {
+        productoService.updateStock(idProducto, cantidad, tipoMovimiento);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

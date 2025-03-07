@@ -7,17 +7,15 @@ import java.util.List;
 
 public interface ProductoService {
 
-    ProductoDtoResponse agregarProducto(ProductoDtoRequest dto);
+    ProductoDtoResponse add(ProductoDtoRequest dto);
 
-    ProductoDtoResponse actualizarProducto(ProductoDtoRequest dto, Integer id);
+    ProductoDtoResponse update(ProductoDtoRequest dto, Integer id);
 
-    void verificarDatos(ProductoDtoRequest dto);
+    List<ProductoDtoResponse> listAll();
 
-    List<ProductoDtoResponse> listar();
+    ProductoDtoResponse getById(Integer id);
 
-    ProductoDtoResponse buscarPorId(Integer id);
+    ProductoDtoResponse getByName(String nombre);
 
-    ProductoDtoResponse buscarPorNombre(String nombre);
-
-    void actualizarStock(Integer idProducto, Integer cantidad, String tipoMovimiento);
+    void updateStock(Integer idProducto, Integer cantidad, String tipoMovimiento);
 }

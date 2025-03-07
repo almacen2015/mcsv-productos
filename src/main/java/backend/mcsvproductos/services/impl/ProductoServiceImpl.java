@@ -28,12 +28,12 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public ProductoDtoResponse actualizarProducto(ProductoDtoRequest dto, Integer id) {
-        verificarDatos(dto);
-        verificarId(id);
+    public ProductoDtoResponse update(ProductoDtoRequest dto, Integer id) {
+        validateData(dto);
+        validateId(id);
 
         Producto producto = productoRepository.findById(id)
-                .orElseThrow(() -> new ProductoException(ProductoException.PRODUCTO_NO_ENCONTRADO));
+                .orElseThrow(() -> new ProductoException(ProductoException.PRODUCT_NOT_FOUND));
 
         producto.setNombre(dto.nombre());
         producto.setDescripcion(dto.descripcion());
@@ -45,10 +45,10 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void actualizarStock(Integer idProducto, Integer cantidad, String tipoMovimiento) {
-        verificarCantidad(cantidad);
+    public void updateStock(Integer idProducto, Integer cantidad, String tipoMovimiento) {
+        validateAmount(cantidad);
         Producto productoEncontrado = productoRepository.findById(idProducto)
-                .orElseThrow(() -> new ProductoException(ProductoException.PRODUCTO_NO_ENCONTRADO));
+                .orElseThrow(() -> new ProductoException(ProductoException.PRODUCT_NOT_FOUND));
 
         final int stock = productoEncontrado.getStock();
         int stockFinal;
@@ -58,7 +58,7 @@ public class ProductoServiceImpl implements ProductoService {
             stockFinal = stock + cantidad;
         }
 
-        verificarStock(stockFinal);
+        validateStock(stockFinal);
         productoEncontrado.setId(productoEncontrado.getId());
         productoEncontrado.setStock(stockFinal);
         productoRepository.save(productoEncontrado);
@@ -66,8 +66,8 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public ProductoDtoResponse agregarProducto(ProductoDtoRequest dto) {
-        verificarDatos(dto);
+    public ProductoDtoResponse add(ProductoDtoRequest dto) {
+        validateData(dto);
         Producto producto = productoMapper.toEntity(dto);
         producto.setEstado(Estado.ACTIVO.getValor());
         producto.setFechaCreacion(LocalDate.now());
@@ -75,53 +75,52 @@ public class ProductoServiceImpl implements ProductoService {
         return productoMapper.toDto(productoGuardado);
     }
 
-    private void verificarStock(Integer stock) {
+    private void validateStock(Integer stock) {
         if (stock == null || stock < 0) {
-            throw new ProductoException(ProductoException.STOCK_INVALIDO);
+            throw new ProductoException(ProductoException.INVALID_STOCK);
         }
     }
 
-    private void verificarCantidad(Integer cantidad) {
+    private void validateAmount(Integer cantidad) {
         if (cantidad == null || cantidad <= 0) {
-            throw new ProductoException(ProductoException.CANTIDAD_INVALIDA);
+            throw new ProductoException(ProductoException.AMOUNT_INVALID);
         }
     }
 
-    private void verificarId(Integer id) {
+    private void validateId(Integer id) {
         if (id == null || id <= 0) {
-            throw new ProductoException(ProductoException.ID_INVALIDO);
+            throw new ProductoException(ProductoException.INVALID_ID);
         }
     }
 
-    @Override
-    public void verificarDatos(ProductoDtoRequest dto) {
+    private void validateData(ProductoDtoRequest dto) {
         final String nombre = dto.nombre();
         final String descripcion = dto.descripcion();
         final Double precio = dto.precio();
 
         if (nombre == null || nombre.isBlank()) {
-            throw new ProductoException(ProductoException.PRODUCTO_NOMBRE_VACIO);
+            throw new ProductoException(ProductoException.PRODUCT_NAME_EMPTY);
         }
 
         if (descripcion == null || descripcion.isBlank()) {
-            throw new ProductoException(ProductoException.PRODUCTO_DESCRIPCION_VACIA);
+            throw new ProductoException(ProductoException.PRODUCT_DESCRIPTION_EMPTY);
         }
 
         if (precio == null || precio <= 0) {
-            throw new ProductoException(ProductoException.PRODUCTO_PRECIO_INVALIDO);
+            throw new ProductoException(ProductoException.PRODUCT_PRICE_INVALID);
         }
     }
 
     @Override
-    public List<ProductoDtoResponse> listar() {
+    public List<ProductoDtoResponse> listAll() {
         List<Producto> productos = productoRepository.findAll();
         return productoMapper.toDtoList(productos);
     }
 
     @Override
-    public ProductoDtoResponse buscarPorId(Integer id) {
+    public ProductoDtoResponse getById(Integer id) {
         if (id == null || id <= 0) {
-            throw new ProductoException(ProductoException.ID_INVALIDO);
+            throw new ProductoException(ProductoException.INVALID_ID);
         }
 
         Optional<Producto> producto = productoRepository.findById(id);
@@ -135,9 +134,9 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    public ProductoDtoResponse buscarPorNombre(String nombre) {
+    public ProductoDtoResponse getByName(String nombre) {
         if (nombre == null || nombre.isBlank()) {
-            throw new ProductoException(ProductoException.PRODUCTO_NOMBRE_VACIO);
+            throw new ProductoException(ProductoException.PRODUCT_NAME_EMPTY);
         }
 
         Optional<Producto> producto = productoRepository.findByNombre(nombre);

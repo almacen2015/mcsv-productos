@@ -43,7 +43,7 @@ class ProductoControllerTest {
         String json = objectMapper.writeValueAsString(dto);
         ProductoDtoResponse producto = new ProductoDtoResponse(1, "Producto 2", "Descripcion 1", 100.0, true, LocalDate.now(), 10);
         // Act
-        when(service.actualizarProducto(any(ProductoDtoRequest.class), any(Integer.class))).thenReturn(producto);
+        when(service.update(any(ProductoDtoRequest.class), any(Integer.class))).thenReturn(producto);
         // Assert
         mockMvc.perform(patch("/api/producto/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -58,7 +58,7 @@ class ProductoControllerTest {
         ProductoDtoResponse producto = new ProductoDtoResponse(1, "Producto 1", "Descripcion 1", 100.0, true, LocalDate.now(), 10);
 
         // Act
-        doNothing().when(service).actualizarStock(1, 5, "SALIDA");
+        doNothing().when(service).updateStock(1, 5, "SALIDA");
 
         // Assert
         mockMvc.perform(put("/api/producto/stock/{idProducto}/{cantidad}/{tipoMovimiento}", 1, 5, "SALIDA"))
@@ -70,7 +70,7 @@ class ProductoControllerTest {
         // Arrange
         ProductoDtoResponse producto = new ProductoDtoResponse(1, "Producto 1", "Descripcion 1", 100.0, true, LocalDate.now(), 10);
         // Act
-        when(service.buscarPorNombre("Producto 1")).thenReturn(producto);
+        when(service.getByName("Producto 1")).thenReturn(producto);
         // Assert
         mockMvc.perform(get("/api/producto/nombre/{nombre}", "Producto 1"))
                 .andExpect(status().isOk())
@@ -86,7 +86,7 @@ class ProductoControllerTest {
         // Arrange
         ProductoDtoResponse producto = new ProductoDtoResponse(1, "Producto 1", "Descripcion 1", 100.0, true, LocalDate.now(), 10);
         // Act
-        when(service.buscarPorId(1)).thenReturn(producto);
+        when(service.getById(1)).thenReturn(producto);
         // Assert
         mockMvc.perform(get("/api/producto/{id}", 1))
                 .andExpect(status().isOk())
@@ -103,7 +103,7 @@ class ProductoControllerTest {
         ProductoDtoResponse producto1 = new ProductoDtoResponse(1, "Producto 1", "Descripcion 1", 100.0, true, LocalDate.now(), 20);
         ProductoDtoResponse producto2 = new ProductoDtoResponse(2, "Producto 2", "Descripcion 2", 200.0, true, LocalDate.now(), 20);
         // Act
-        when(service.listar()).thenReturn(List.of(producto1, producto2));
+        when(service.listAll()).thenReturn(List.of(producto1, producto2));
         // Assert
         mockMvc.perform(get("/api/producto"))
                 .andExpect(status().isOk())
@@ -128,7 +128,7 @@ class ProductoControllerTest {
         String json = objectMapper.writeValueAsString(dto);
         // Act
         ProductoDtoResponse producto = new ProductoDtoResponse(1, "Producto 1", "Descripcion 1", 100.0, true, LocalDate.now(), 10);
-        when(service.agregarProducto(any(ProductoDtoRequest.class))).thenReturn(producto);
+        when(service.add(any(ProductoDtoRequest.class))).thenReturn(producto);
         // Assert
         mockMvc.perform(post("/api/producto")
                         .contentType(MediaType.APPLICATION_JSON)
