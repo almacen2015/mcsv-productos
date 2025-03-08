@@ -243,7 +243,7 @@ class ProductoServiceImplTest {
         ProductoDtoRequest dto = new ProductoDtoRequest("Producto 1", "Descripcion 1", -100.0);
 
         // Act & Assert
-        assertThrows(ProductoException.class, () -> service.verificarDatos(dto));
+        assertThrows(ProductoException.class, () -> service.add(dto));
     }
 
     @Test
@@ -252,7 +252,7 @@ class ProductoServiceImplTest {
         ProductoDtoRequest dto = new ProductoDtoRequest("Producto 1", "Descripcion 1", 0.0);
 
         // Act & Assert
-        assertThrows(ProductoException.class, () -> service.verificarDatos(dto));
+        assertThrows(ProductoException.class, () -> service.add(dto));
     }
 
     @Test
@@ -261,7 +261,7 @@ class ProductoServiceImplTest {
         ProductoDtoRequest dto = new ProductoDtoRequest("Producto 1", "", 100.0);
 
         // Act & Assert
-        assertThrows(ProductoException.class, () -> service.verificarDatos(dto));
+        assertThrows(ProductoException.class, () -> service.add(dto));
     }
 
     @Test
@@ -270,7 +270,7 @@ class ProductoServiceImplTest {
         ProductoDtoRequest dto = new ProductoDtoRequest("", "Descripcion 1", 100.0);
 
         // Act & Assert
-        assertThrows(ProductoException.class, () -> service.verificarDatos(dto));
+        assertThrows(ProductoException.class, () -> service.add(dto));
     }
 
     @Test
