@@ -71,6 +71,7 @@ public class ProductoServiceImpl implements ProductoService {
         Producto producto = productoMapper.toEntity(dto);
         producto.setEstado(Estado.ACTIVO.getValor());
         producto.setFechaCreacion(LocalDate.now());
+        producto.setStock(0);
         Producto productoGuardado = productoRepository.save(producto);
         return productoMapper.toDto(productoGuardado);
     }
