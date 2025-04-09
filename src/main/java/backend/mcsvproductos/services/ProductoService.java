@@ -17,7 +17,7 @@ public interface ProductoService {
 
     ProductoDtoResponse getById(Integer id);
 
-    ProductoDtoResponse getByName(String nombre);
+    Page<ProductoDtoResponse> listByname(String nombre, Paginado paginado);
 
     void updateStock(Integer idProducto, Integer cantidad, String tipoMovimiento);
 }

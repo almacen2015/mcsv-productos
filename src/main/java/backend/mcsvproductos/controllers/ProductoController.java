@@ -3,6 +3,7 @@ package backend.mcsvproductos.controllers;
 import backend.mcsvproductos.models.dto.request.ProductoDtoRequest;
 import backend.mcsvproductos.models.dto.response.ProductoDtoResponse;
 import backend.mcsvproductos.services.ProductoService;
+import backend.mcsvproductos.util.Paginado;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -66,10 +67,9 @@ public class ProductoController {
             @ApiResponse(responseCode = "200", description = "Producto encontrado"),
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
-    @GetMapping("/nombre/{nombre}")
-    public ResponseEntity<ProductoDtoResponse> getByName(@PathVariable String nombre) {
-        ProductoDtoResponse producto = productoService.getByName(nombre);
-        return new ResponseEntity<>(producto, HttpStatus.OK);
+    @PostMapping("/nombre/{nombre}")
+    public ResponseEntity<Page<ProductoDtoResponse>> getByName(@PathVariable String nombre, @RequestBody Paginado paginado) {
+        return new ResponseEntity<>(productoService.listByname(nombre, paginado), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")

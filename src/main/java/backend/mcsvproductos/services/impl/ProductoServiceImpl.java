@@ -101,16 +101,28 @@ public class ProductoServiceImpl implements ProductoService {
         final String descripcion = dto.descripcion();
         final Double precio = dto.precio();
 
-        if (nombre == null || nombre.isBlank()) {
-            throw new ProductoException(ProductoException.PRODUCT_NAME_EMPTY);
-        }
+        validateNombre(nombre);
 
+        validateDescripcion(descripcion);
+
+        validatePrecio(precio);
+    }
+
+    private void validatePrecio(Double precio) {
+        if (precio == null || precio <= 0) {
+            throw new ProductoException(ProductoException.PRODUCT_PRICE_INVALID);
+        }
+    }
+
+    private void validateDescripcion(String descripcion) {
         if (descripcion == null || descripcion.isBlank()) {
             throw new ProductoException(ProductoException.PRODUCT_DESCRIPTION_EMPTY);
         }
+    }
 
-        if (precio == null || precio <= 0) {
-            throw new ProductoException(ProductoException.PRODUCT_PRICE_INVALID);
+    private void validateNombre(String nombre) {
+        if (nombre == null || nombre.isBlank()) {
+            throw new ProductoException(ProductoException.PRODUCT_NAME_EMPTY);
         }
     }
 
@@ -145,19 +157,22 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    public ProductoDtoResponse getByName(String nombre) {
-        if (nombre == null || nombre.isBlank()) {
-            throw new ProductoException(ProductoException.PRODUCT_NAME_EMPTY);
-        }
+    public Page<ProductoDtoResponse> listByname(String nombre, Paginado paginado) {
+        validatePaginado(paginado.page(), paginado.size(), paginado.orderBy());
+        validateNombre(nombre);
 
-        Optional<Producto> producto = productoRepository.findByNombre(nombre);
-        if (producto.isEmpty()) {
+        Pageable pageable = constructPageable(paginado.page(), paginado.size(), paginado.orderBy());
+
+        Page<Producto> productos = productoRepository.findAllByNombreIgnoreCaseContaining(nombre, pageable);
+
+        if (productos.isEmpty()) {
             return null;
         }
 
-        ProductoDtoResponse response = productoMapper.toDto(producto.get());
+        List<ProductoDtoResponse> response = productos.getContent().stream()
+                .map(productoMapper::toDto).toList();
 
-        return response;
+        return new PageImpl<>(response, pageable, productos.getTotalElements());
     }
 
     private PageRequest constructPageable(Integer page, Integer size, String orderBy) {
