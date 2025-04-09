@@ -9,7 +9,9 @@ import backend.mcsvproductos.models.dto.response.ProductoDtoResponse;
 import backend.mcsvproductos.models.entities.Producto;
 import backend.mcsvproductos.repositories.ProductoRepository;
 import backend.mcsvproductos.services.ProductoService;
+import backend.mcsvproductos.util.Paginado;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -113,9 +115,17 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    public List<ProductoDtoResponse> listAll() {
-        List<Producto> productos = productoRepository.findAll();
-        return productoMapper.toDtoList(productos);
+    public Page<ProductoDtoResponse> listAll(Integer page, Integer size, String orderBy) {
+        validatePaginado(page, size, orderBy);
+        Pageable pageable = constructPageable(page, size, orderBy);
+
+        Page<Producto> productos = productoRepository.findAll(pageable);
+
+        List<ProductoDtoResponse> response = productos.getContent().stream()
+                .map(productoMapper::toDto)
+                .toList();
+
+        return new PageImpl<>(response, pageable, productos.getTotalElements());
     }
 
     @Override
@@ -148,5 +158,23 @@ public class ProductoServiceImpl implements ProductoService {
         ProductoDtoResponse response = productoMapper.toDto(producto.get());
 
         return response;
+    }
+
+    private PageRequest constructPageable(Integer page, Integer size, String orderBy) {
+        return PageRequest.of(page - 1, size, Sort.by(orderBy).descending());
+    }
+
+    private void validatePaginado(Integer page, Integer size, String orderBy) {
+        if (page <= 0) {
+            throw new ProductoException(ProductoException.PAGE_NUMBER_INVALID);
+        }
+
+        if (size <= 0) {
+            throw new ProductoException(ProductoException.SIZE_NUMBER_INVALID);
+        }
+
+        if (orderBy == null || orderBy.isBlank()) {
+            throw new ProductoException(ProductoException.SORT_NAME_INVALID);
+        }
     }
 }

@@ -7,15 +7,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/producto")
+@RequestMapping("/api/productos")
 @SecurityRequirement(name = "BearerAuth")
 public class ProductoController {
 
@@ -42,10 +41,11 @@ public class ProductoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Productos listados")
     })
-    @GetMapping
-    public ResponseEntity<List<ProductoDtoResponse>> list() {
-        List<ProductoDtoResponse> productos = productoService.listAll();
-        return new ResponseEntity<>(productos, HttpStatus.OK);
+    @GetMapping()
+    public ResponseEntity<Page<ProductoDtoResponse>> list(@RequestParam Integer page,
+                                                          @RequestParam Integer size,
+                                                          @RequestParam String orderBy) {
+        return new ResponseEntity<>(productoService.listAll(page, size, orderBy), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','USER')")

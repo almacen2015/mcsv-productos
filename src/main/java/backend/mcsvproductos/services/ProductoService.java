@@ -2,6 +2,8 @@ package backend.mcsvproductos.services;
 
 import backend.mcsvproductos.models.dto.request.ProductoDtoRequest;
 import backend.mcsvproductos.models.dto.response.ProductoDtoResponse;
+import backend.mcsvproductos.util.Paginado;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -11,7 +13,7 @@ public interface ProductoService {
 
     ProductoDtoResponse update(ProductoDtoRequest dto, Integer id);
 
-    List<ProductoDtoResponse> listAll();
+    Page<ProductoDtoResponse> listAll(Integer page, Integer size, String orderBy);
 
     ProductoDtoResponse getById(Integer id);
 

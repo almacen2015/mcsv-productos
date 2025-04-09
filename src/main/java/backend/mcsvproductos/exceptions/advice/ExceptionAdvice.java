@@ -14,10 +14,15 @@ import java.util.Set;
 public class ExceptionAdvice {
 
     private static final Set<String> ERRORES_VALIDACION = Set.of(
-            ProductoException.PRODUCT_DESCRIPTION_EMPTY,
             ProductoException.PRODUCT_NAME_EMPTY,
+            ProductoException.PRODUCT_DESCRIPTION_EMPTY,
             ProductoException.PRODUCT_PRICE_INVALID,
-            ProductoException.INVALID_ID
+            ProductoException.AMOUNT_INVALID,
+            ProductoException.INVALID_STOCK,
+            ProductoException.PRODUCT_NOT_FOUND,
+            ProductoException.PAGE_NUMBER_INVALID,
+            ProductoException.SIZE_NUMBER_INVALID,
+            ProductoException.SORT_NAME_INVALID
     );
 
     @ExceptionHandler(ProductoException.class)
